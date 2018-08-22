@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    networks:
+      - webnet
+  rails:
+    build: ../water-tracker/
+    command: bundle exec rails s -p 8000 -b '0.0.0.0'
+    volumes: 
+      - ../water-tracker:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - webnet
+  react:
+    build: ../water-tracker-react/
+    command: npm start
+    volumes:
+      - ../water-tracker-react:/webapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - rails
+    networks:
+      - webnet
+networks:
+  webnet:
